@@ -23,6 +23,9 @@ npm test
 
 # 启动桌面应用（配置持久化于 %APPDATA%\Shizuku文件管理器\settings.json）
 npm start
+
+# 打包 Windows 便携 ZIP 与 NSIS 安装包（产物输出至 desktop/release/）
+npm run dist:win
 ```
 
 ## 安卓版构建

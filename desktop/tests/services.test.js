@@ -199,9 +199,26 @@ test('Windows 剪贴板 CF_HDROP 编码解码（含中文路径）', () => {
   assert.deepEqual(decoded, input);
 });
 
-test('7-Zip 压缩包：AES-256 加密压缩、查看条目列表、带密码解压', async () => {
-  const exePath = path.join(__dirname, '..', 'resources', '7za.exe');
-  if (!fs.existsSync(exePath)) return;
+const { spawnSync } = require('node:child_process');
+
+function resolveSevenZipForTest() {
+  if (process.platform === 'win32') {
+    const winExe = path.join(__dirname, '..', 'resources', '7za.exe');
+    return fs.existsSync(winExe) ? winExe : null;
+  }
+  for (const bin of ['7za', '7z', '7zz']) {
+    const r = spawnSync('which', [bin], { encoding: 'utf8' });
+    if (r.status === 0 && r.stdout && r.stdout.trim()) return r.stdout.trim();
+  }
+  return null;
+}
+
+test('7-Zip 压缩包：AES-256 加密压缩、查看条目列表、带密码解压', async (t) => {
+  const exePath = resolveSevenZipForTest();
+  if (!exePath) {
+    t.skip('当前平台未找到可用的 7-Zip 可执行文件');
+    return;
+  }
 
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'shizuku-7z-test-'));
   try {

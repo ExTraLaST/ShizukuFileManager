@@ -3,6 +3,7 @@
   "productName": "Shizuku文件管理器",
   "version": "2.0.0",
   "description": "Shizuku 文件管理器 Windows 11 风格多窗格桌面端（内置局域网互联）",
+  "author": "ExTraLaST",
   "main": "dist-electron/main.js",
   "scripts": {
     "build:electron": "tsc -p tsconfig.electron.json",
@@ -10,7 +11,66 @@
     "build": "npm run build:electron && npm run build:renderer",
     "dev:renderer": "vite",
     "start": "npm run build && electron .",
-    "test": "npm run build:electron && node --test tests/*.test.js"
+    "test": "npm run build:electron && node --test tests/*.test.js",
+    "pack": "npm run build && electron-builder --dir",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:win:zip": "npm run build && electron-builder --win zip"
+  },
+  "build": {
+    "appId": "com.shizuku.filemanager.desktop",
+    "productName": "Shizuku文件管理器",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json",
+      "!**/*.map"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/7za.exe",
+        "to": "7za.exe"
+      },
+      {
+        "from": "resources/ShellMenu.exe",
+        "to": "ShellMenu.exe"
+      },
+      {
+        "from": "resources/templates",
+        "to": "templates",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "ShizukuFileManager-v${version}-win-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Shizuku文件管理器",
+      "artifactName": "ShizukuFileManager-v${version}-win-${arch}-setup.${ext}"
+    }
   },
   "dependencies": {
     "lucide-react": "^0.469.0",
@@ -23,6 +83,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "electron": "^35.0.0",
+    "electron-builder": "^26.18.0",
     "typescript": "^5.7.2",
     "vite": "^6.0.3"
   }
