@@ -1,0 +1,29 @@
+{
+  "name": "shizuku-file-manager-desktop",
+  "productName": "Shizuku文件管理器",
+  "version": "2.0.0",
+  "description": "Shizuku 文件管理器 Windows 11 风格多窗格桌面端（内置局域网互联）",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "build:renderer": "vite build",
+    "build": "npm run build:electron && npm run build:renderer",
+    "dev:renderer": "vite",
+    "start": "npm run build && electron .",
+    "test": "npm run build:electron && node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^35.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3"
+  }
+}
