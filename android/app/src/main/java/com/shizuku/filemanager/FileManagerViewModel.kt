@@ -440,23 +440,25 @@ class FileManagerViewModel(application: Application) : AndroidViewModel(applicat
         dstFs: UnifiedFileSystem,
         dstDir: String,
         onBytes: (Long) -> Unit
-    ) = withContext(Dispatchers.IO) {
-        val dstPath = if (dstDir.endsWith("/")) "$dstDir${item.name}" else "$dstDir/${item.name}"
-        if (item.isDirectory) {
-            dstFs.mkdir(dstDir, item.name)
-            srcFs.list(item.path, true).forEach { child ->
-                transferCrossRoot(srcRoot, srcFs, child, dstRoot, dstFs, dstPath, onBytes)
-            }
-        } else if (srcRoot == PaneRoot.Local && dstRoot is PaneRoot.Link) {
-            LinkClient(dstRoot.device).uploadFile(File(item.path), dstPath, onBytes)
-        } else {
-            srcFs.openInput(item.path).use { ins ->
-                dstFs.openOutput(dstPath).use { out ->
-                    val buf = ByteArray(128 * 1024)
-                    var n: Int
-                    while (ins.read(buf).also { n = it } != -1) {
-                        out.write(buf, 0, n)
-                        onBytes(n.toLong())
+    ) {
+        withContext(Dispatchers.IO) {
+            val dstPath = if (dstDir.endsWith("/")) "$dstDir${item.name}" else "$dstDir/${item.name}"
+            if (item.isDirectory) {
+                dstFs.mkdir(dstDir, item.name)
+                srcFs.list(item.path, true).forEach { child ->
+                    transferCrossRoot(srcRoot, srcFs, child, dstRoot, dstFs, dstPath, onBytes)
+                }
+            } else if (srcRoot == PaneRoot.Local && dstRoot is PaneRoot.Link) {
+                LinkClient(dstRoot.device).uploadFile(File(item.path), dstPath, onBytes)
+            } else {
+                srcFs.openInput(item.path).use { ins ->
+                    dstFs.openOutput(dstPath).use { out ->
+                        val buf = ByteArray(128 * 1024)
+                        var n: Int
+                        while (ins.read(buf).also { n = it } != -1) {
+                            out.write(buf, 0, n)
+                            onBytes(n.toLong())
+                        }
                     }
                 }
             }

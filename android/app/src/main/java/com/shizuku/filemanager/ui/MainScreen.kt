@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.shizuku.filemanager.FileManagerViewModel
 import com.shizuku.filemanager.fs.ThumbnailLoader
 import com.shizuku.filemanager.model.*
+import kotlinx.coroutines.launch
 import java.io.File
 
 /**

@@ -293,7 +293,9 @@ class LinkFileSystem(private val device: LinkServerConfig) : UnifiedFileSystem {
         client.mkdir(joined)
     }
 
-    override suspend fun delete(path: String) = client.delete(path)
+    override suspend fun delete(path: String) {
+        client.delete(path)
+    }
     override suspend fun rename(oldPath: String, newName: String): String = client.rename(oldPath, newName)
     override suspend fun copy(srcPath: String, destDir: String, onBytes: ((Long) -> Unit)?) {
         client.copy(srcPath, destDir)
